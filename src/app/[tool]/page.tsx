@@ -9,12 +9,15 @@ import { ToolLayout } from "@/components/tool/ToolLayout";
 import { Card, CardContent } from "@/components/ui/card";
 import { getToolContent } from "@/data/tool-content";
 
-// Pre-render every tool page at build time
+// ── Live tool imports ──────────────────────────────────────────────────────────
+import dynamic from "next/dynamic";
+const TokenCounter = dynamic(() => import("@/tools/token-counter"), { ssr: false });
+// ──────────────────────────────────────────────────────────────────────────────
+
 export function generateStaticParams() {
   return tools.map((tool) => ({ tool: tool.slug }));
 }
 
-// Disallow any tool not in the registry (returns 404 for unknown slugs)
 export const dynamicParams = false;
 
 type Params = { tool: string };
@@ -51,6 +54,15 @@ export async function generateMetadata({
   };
 }
 
+function getToolComponent(slug: string) {
+  switch (slug) {
+    case "token-counter":
+      return <TokenCounter />;
+    default:
+      return null;
+  }
+}
+
 export default async function ToolPage({
   params,
 }: {
@@ -60,11 +72,10 @@ export default async function ToolPage({
   const tool = getToolBySlug(slug);
   if (!tool) notFound();
 
-  // Pull per-tool content if it exists, otherwise fall back to a generic stub.
   const content = getToolContent(tool.slug);
+  const liveComponent = getToolComponent(slug);
 
-  // Stub interactive area — replaced when the tool itself is implemented.
-  const toolComponent = (
+  const toolComponent = liveComponent ?? (
     <Card className="bg-zinc-50/50 dark:bg-zinc-900/50">
       <CardContent className="flex flex-col items-center justify-center gap-3 p-10 text-center">
         <span className="grid h-11 w-11 place-items-center rounded-full bg-zinc-200 dark:bg-zinc-800 text-zinc-500">
