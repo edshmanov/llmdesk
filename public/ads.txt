@@ -1,0 +1,10 @@
+# ads.txt placeholder
+#
+# After Google AdSense approval, replace the contents of this file with the
+# authorized sellers line that Google provides in your AdSense dashboard. It
+# will look something like this:
+#
+# google.com, pub-XXXXXXXXXXXXXXXX, DIRECT, f08c47fec0942fa0
+#
+# Keeping a valid ads.txt at the site root is required for AdSense and is one
+# of the items on the AdSense approval checklist.
