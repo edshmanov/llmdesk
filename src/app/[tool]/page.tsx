@@ -8,13 +8,12 @@ import { absoluteUrl } from "@/lib/utils";
 import { ToolLayout } from "@/components/tool/ToolLayout";
 import { Card, CardContent } from "@/components/ui/card";
 import { getToolContent } from "@/data/tool-content";
+import { ToolClientWrapper } from "./ToolClientWrapper";
 
-// Pre-render every tool page at build time
 export function generateStaticParams() {
   return tools.map((tool) => ({ tool: tool.slug }));
 }
 
-// Disallow any tool not in the registry (returns 404 for unknown slugs)
 export const dynamicParams = false;
 
 type Params = { tool: string };
@@ -27,17 +26,14 @@ export async function generateMetadata({
   const { tool: slug } = await params;
   const tool = getToolBySlug(slug);
   if (!tool) return {};
-
   const url = absoluteUrl(`/${tool.slug}`);
-
   return {
     title: tool.metaTitle,
     description: tool.metaDescription,
     keywords: [tool.primaryKeyword, ...tool.secondaryKeywords],
     alternates: { canonical: `/${tool.slug}` },
     openGraph: {
-      type: "website",
-      url,
+      type: "website", url,
       title: tool.metaTitle,
       description: tool.metaDescription,
       images: [{ url: "/og-image.png", width: 1200, height: 630, alt: tool.name }],
@@ -51,6 +47,8 @@ export async function generateMetadata({
   };
 }
 
+const LIVE_TOOLS = new Set(['token-counter', 'api-cost-calculator']);
+
 export default async function ToolPage({
   params,
 }: {
@@ -60,11 +58,11 @@ export default async function ToolPage({
   const tool = getToolBySlug(slug);
   if (!tool) notFound();
 
-  // Pull per-tool content if it exists, otherwise fall back to a generic stub.
   const content = getToolContent(tool.slug);
 
-  // Stub interactive area — replaced when the tool itself is implemented.
-  const toolComponent = (
+  const toolComponent = LIVE_TOOLS.has(slug) ? (
+    <ToolClientWrapper slug={slug} />
+  ) : (
     <Card className="bg-zinc-50/50 dark:bg-zinc-900/50">
       <CardContent className="flex flex-col items-center justify-center gap-3 p-10 text-center">
         <span className="grid h-11 w-11 place-items-center rounded-full bg-zinc-200 dark:bg-zinc-800 text-zinc-500">
