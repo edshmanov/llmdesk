@@ -8,12 +8,7 @@ import { absoluteUrl } from "@/lib/utils";
 import { ToolLayout } from "@/components/tool/ToolLayout";
 import { Card, CardContent } from "@/components/ui/card";
 import { getToolContent } from "@/data/tool-content";
-
-// ── Live tool imports ──────────────────────────────────────────────────────────
-import dynamic from "next/dynamic";
-const TokenCounter = dynamic(() => import("@/tools/token-counter"), { ssr: false });
-const ApiCostCalculator = dynamic(() => import("@/tools/api-cost-calculator"), { ssr: false });
-// ──────────────────────────────────────────────────────────────────────────────
+import { ToolClientWrapper } from "./ToolClientWrapper";
 
 export function generateStaticParams() {
   return tools.map((tool) => ({ tool: tool.slug }));
@@ -31,17 +26,14 @@ export async function generateMetadata({
   const { tool: slug } = await params;
   const tool = getToolBySlug(slug);
   if (!tool) return {};
-
   const url = absoluteUrl(`/${tool.slug}`);
-
   return {
     title: tool.metaTitle,
     description: tool.metaDescription,
     keywords: [tool.primaryKeyword, ...tool.secondaryKeywords],
     alternates: { canonical: `/${tool.slug}` },
     openGraph: {
-      type: "website",
-      url,
+      type: "website", url,
       title: tool.metaTitle,
       description: tool.metaDescription,
       images: [{ url: "/og-image.png", width: 1200, height: 630, alt: tool.name }],
@@ -55,16 +47,7 @@ export async function generateMetadata({
   };
 }
 
-function getToolComponent(slug: string) {
-  switch (slug) {
-    case "token-counter":
-      return <TokenCounter />;
-    case "api-cost-calculator":
-      return <ApiCostCalculator />;
-    default:
-      return null;
-  }
-}
+const LIVE_TOOLS = new Set(['token-counter', 'api-cost-calculator']);
 
 export default async function ToolPage({
   params,
@@ -76,9 +59,10 @@ export default async function ToolPage({
   if (!tool) notFound();
 
   const content = getToolContent(tool.slug);
-  const liveComponent = getToolComponent(slug);
 
-  const toolComponent = liveComponent ?? (
+  const toolComponent = LIVE_TOOLS.has(slug) ? (
+    <ToolClientWrapper slug={slug} />
+  ) : (
     <Card className="bg-zinc-50/50 dark:bg-zinc-900/50">
       <CardContent className="flex flex-col items-center justify-center gap-3 p-10 text-center">
         <span className="grid h-11 w-11 place-items-center rounded-full bg-zinc-200 dark:bg-zinc-800 text-zinc-500">
