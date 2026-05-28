@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { Construction } from "lucide-react";
-
 import { tools, getToolBySlug } from "@/lib/tools";
 import { absoluteUrl } from "@/lib/utils";
 import { ToolLayout } from "@/components/tool/ToolLayout";
@@ -33,9 +32,39 @@ export async function generateMetadata({ params }: { params: Promise<Params> }):
   };
 }
 
-const LIVE_TOOLS = new Set(['token-counter', 'api-cost-calculator', 'ai-json-repairer', 'system-prompt-generator', 'text-chunker']);
+const LIVE_TOOLS = new Set(["token-counter","api-cost-calculator","ai-json-repairer","system-prompt-generator","text-chunker"]);
 
 export default async function ToolPage({ params }: { params: Promise<Params> }) {
   const { tool: slug } = await params;
   const tool = getToolBySlug(slug);
-  if (!tool
+  if (!tool) notFound();
+  const content = getToolContent(tool.slug);
+  const toolComponent = LIVE_TOOLS.has(slug) ? (
+    <ToolWrapper slug={slug} />
+  ) : (
+    <Card className="bg-zinc-50/50 dark:bg-zinc-900/50">
+      <CardContent className="flex flex-col items-center justify-center gap-3 p-10 text-center">
+        <span className="grid h-11 w-11 place-items-center rounded-full bg-zinc-200 dark:bg-zinc-800 text-zinc-500">
+          <Construction className="h-5 w-5" />
+        </span>
+        <div>
+          <h2 className="text-lg font-semibold">{tool.name} is coming soon</h2>
+          <p className="mt-1 text-sm text-zinc-600 dark:text-zinc-400 max-w-md">
+            We&apos;re building this one next. Bookmark the page or browse{" "}
+            <Link href="/" className="text-accent underline">50+ other tools</Link>{" "}
+            in the meantime.
+          </p>
+        </div>
+      </CardContent>
+    </Card>
+  );
+  return (
+    <ToolLayout
+      tool={tool}
+      toolComponent={toolComponent}
+      howItWorks={content.howItWorks}
+      useCases={content.useCases}
+      faq={content.faq}
+    />
+  );
+}
