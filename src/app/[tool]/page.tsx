@@ -32,7 +32,7 @@ export async function generateMetadata({ params }: { params: Promise<Params> }):
   };
 }
 
-const LIVE_TOOLS = new Set(["token-counter","api-cost-calculator","ai-json-repairer","system-prompt-generator","text-chunker"]);
+const LIVE_TOOLS = new Set(["token-counter","api-cost-calculator","ai-json-repairer","system-prompt-generator","text-chunker","markdown-to-plain-text","emoji-stripper","ai-tell-phrase-remover","smart-quote-cleaner","bullet-to-prose-converter"]);
 
 export default async function ToolPage({ params }: { params: Promise<Params> }) {
   const { tool: slug } = await params;
