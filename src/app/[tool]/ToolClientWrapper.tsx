@@ -17,6 +17,10 @@ const XmlPromptFormatter = dynamic(() => import('@/tools/xml-prompt-formatter'),
 const PromptVariableExtractor = dynamic(() => import('@/tools/prompt-variable-extractor'), { ssr: false });
 const ChainOfThoughtWrapper = dynamic(() => import('@/tools/chain-of-thought-wrapper'), { ssr: false });
 const NegativePromptBuilder = dynamic(() => import('@/tools/negative-prompt-builder'), { ssr: false });
+const JsonSchemaBuilder = dynamic(() => import('@/tools/json-schema-builder'), { ssr: false });
+const AiPersonaGenerator = dynamic(() => import('@/tools/ai-persona-generator'), { ssr: false });
+const PromptDiffChecker = dynamic(() => import('@/tools/prompt-diff-checker'), { ssr: false });
+const MidjourneyParameterBuilder = dynamic(() => import('@/tools/midjourney-parameter-builder'), { ssr: false });
 
 export function ToolClientWrapper({ slug }: { slug: string }) {
   switch (slug) {
@@ -35,6 +39,10 @@ export function ToolClientWrapper({ slug }: { slug: string }) {
     case 'prompt-variable-extractor': return <PromptVariableExtractor />;
     case 'chain-of-thought-wrapper': return <ChainOfThoughtWrapper />;
     case 'negative-prompt-builder': return <NegativePromptBuilder />;
+    case 'json-schema-builder': return <JsonSchemaBuilder />;
+    case 'ai-persona-generator': return <AiPersonaGenerator />;
+    case 'prompt-diff-checker': return <PromptDiffChecker />;
+    case 'midjourney-parameter-builder': return <MidjourneyParameterBuilder />;
     default: return null;
   }
 }
