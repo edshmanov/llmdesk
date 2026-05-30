@@ -21,6 +21,11 @@ const JsonSchemaBuilder = dynamic(() => import('@/tools/json-schema-builder'), {
 const AiPersonaGenerator = dynamic(() => import('@/tools/ai-persona-generator'), { ssr: false });
 const PromptDiffChecker = dynamic(() => import('@/tools/prompt-diff-checker'), { ssr: false });
 const MidjourneyParameterBuilder = dynamic(() => import('@/tools/midjourney-parameter-builder'), { ssr: false });
+const MonthlyAiBillEstimator = dynamic(() => import('@/tools/monthly-ai-bill-estimator'), { ssr: false });
+const TokenToWordRatioAnalyzer = dynamic(() => import('@/tools/token-to-word-ratio-analyzer'), { ssr: false });
+const BatchJobCostCalculator = dynamic(() => import('@/tools/batch-job-cost-calculator'), { ssr: false });
+const PromptTokenSlimmer = dynamic(() => import('@/tools/prompt-token-slimmer'), { ssr: false });
+const ContextWindowFiller = dynamic(() => import('@/tools/context-window-filler'), { ssr: false });
 
 export function ToolClientWrapper({ slug }: { slug: string }) {
   switch (slug) {
@@ -43,6 +48,11 @@ export function ToolClientWrapper({ slug }: { slug: string }) {
     case 'ai-persona-generator': return <AiPersonaGenerator />;
     case 'prompt-diff-checker': return <PromptDiffChecker />;
     case 'midjourney-parameter-builder': return <MidjourneyParameterBuilder />;
+    case 'monthly-ai-bill-estimator': return <MonthlyAiBillEstimator />;
+    case 'token-to-word-ratio-analyzer': return <TokenToWordRatioAnalyzer />;
+    case 'batch-job-cost-calculator': return <BatchJobCostCalculator />;
+    case 'prompt-token-slimmer': return <PromptTokenSlimmer />;
+    case 'context-window-filler': return <ContextWindowFiller />;
     default: return null;
   }
 }
